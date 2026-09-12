@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { createUserProfile, getUserProfile } from "../firebase/firestore";
+
 import {
   loginUser,
   loginWithGoogle,
@@ -12,33 +14,51 @@ export default function Login() {
   const [error, setError] = useState("");
 
   const handleEmailAuth = async () => {
-    try {
-      setError("");
+  try {
+    setError("");
 
-      if (isRegistering) {
-        await registerUser(email, password);
-      } else {
-        await loginUser(email, password);
-      }
-
-      console.log("Authentication successful");
-    } catch (error) {
-      console.error(error);
-      setError("Authentication failed. Please check your details.");
+    if (isRegistering) {
+      await registerUser(email, password);
+    } else {
+      await loginUser(email, password);
     }
-  };
+
+    console.log("Authentication successful");
+  } catch (error) {
+    console.error(error);
+
+    if (error instanceof Error) {
+      setError(error.message);
+    } else {
+      setError("Authentication failed.");
+    }
+  }
+};
 
   const handleGoogleLogin = async () => {
-    try {
-      setError("");
-      await loginWithGoogle();
+  try {
+    setError("");
 
-      console.log("Google authentication successful");
-    } catch (error) {
-      console.error(error);
-      setError("Google sign-in failed.");
+    const result = await loginWithGoogle();
+    const user = result.user;
+
+    const existingProfile = await getUserProfile(user.uid);
+
+    if (!existingProfile) {
+      await createUserProfile(
+        user.uid,
+        user.email ?? "",
+        user.displayName ?? "",
+        user.photoURL ?? "",
+      );
     }
-  };
+
+    console.log("Google authentication successful");
+  } catch (error) {
+    console.error(error);
+    setError("Google sign-in failed.");
+  }
+};
 
   return (
     <main>
