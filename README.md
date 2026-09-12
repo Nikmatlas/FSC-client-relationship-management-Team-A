@@ -1,376 +1,620 @@
-# Food Systems Collective — Client & Partner Relationship Management System
+# FSC CRM — Frontend & Backend Development Guide
 
-> A web-based Client & Partner Relationship Management (CRM) system developed for the Food Systems Collective (FSC).
+## 1. Purpose
 
-The system is designed to help FSC manage its relationships with clients and partners in one centralised platform. It provides a structured way to manage contacts, organisations, communications, proposals, activities, and relationship information.
+This document explains how the FSC CRM Team A codebase is organised and which files each team member should edit.
 
-## Project Overview
+The main goal is to keep the frontend, backend, documentation and design work separated and prevent accidental changes that cause build errors, broken pages, Firebase problems, or merge conflicts.
 
-The FSC CRM is being developed as a team project to support the Client & Partner Relationship Management needs of the Food Systems Collective.
+### Team Members
 
-The system aims to:
+| Name | Role | Main Responsibility |
+|---|---|---|
+| **Anay Arora** | Backend Developer | Backend, database, Firestore and backend logic |
+| **Sheran Mickayel Narasingha Mudiyanselage** | Frontend Developer | Frontend pages, components and functionality |
+| **Sienna Saunders** | UX/UI Designer | UI, UX, layouts and visual design |
+| **Semih Eren** | Project Manager | Project management, documentation and coordination |
+| **Nicholas Matthew** | Business Analyst | Requirements, business logic, workflows and cross-team support |
 
-- Centralise client and partner information
-- Make relationship information easier to access and manage
-- Track interactions and communications
-- Support client and partner relationship management
-- Improve visibility of ongoing activities and proposals
-- Reduce reliance on disconnected spreadsheets and manual processes
-- Provide a foundation for future CRM functionality
+### Development Responsibilities
 
-## Tech Stack
+| Area | Main Responsibility |
+|---|---|
+| Frontend | Sheran — Pages, UI, navigation, components and frontend functionality |
+| Backend | Anay — Backend, database, Firestore operations and backend logic |
+| UX/UI | Sienna — Design, layouts and visual requirements |
+| Documentation / PM | Semih — Documentation, project coordination and project management |
+| BA / Requirements | Nicholas — Requirements, workflow, acceptance criteria and scope |
+| Cross-Team Support | Nicholas — Can work across frontend, backend and documentation |
+| Shared | Team — Types, authentication structure and project configuration |
 
-| | |
-|-|-|
-| **Frontend** | React · Vite · TypeScript · Tailwind CSS |
-| **Backend** | Firebase Cloud Functions v2 · Express |
-| **Database** | Firebase Firestore |
-| **Authentication** | Firebase Authentication |
-| **Package Manager** | pnpm |
-| **Testing** | Vitest · Testing Library · Supertest |
-| **Code Quality** | ESLint · Prettier · Lefthook |
-| **CI/CD** | GitHub Actions |
-| **Deployment** | Vercel |
+---
 
-## Project Structure
+# 2. Project Structure
 
 ```text
-/
-├── frontend/
-│   └── src/
-│       ├── components/      # Reusable React components
-│       ├── pages/           # Application pages
-│       ├── features/        # Feature-specific modules
-│       ├── lib/             # Firebase, utilities and shared logic
-│       ├── hooks/           # Custom React hooks
-│       ├── providers/       # React context providers
-│       ├── types/           # TypeScript type definitions
-│       ├── assets/          # Images and other frontend assets
-│       ├── App.tsx          # Main React application
-│       └── main.tsx         # React application entry point
-│
+FSC-client-relationship-management-Team-A/
 ├── backend/
+│   ├── data/
+│   │   └── seed-data.json
+│   ├── package.json
 │   └── src/
-│       ├── app.ts           # Express application
-│       ├── routes/           # API routes
-│       ├── middleware/      # Authentication and error handling
-│       └── lib/              # Firebase and backend utilities
+│       ├── lib/
+│       ├── middleware/
+│       ├── routes/
+│       └── services/
 │
-├── firebase/
-│   ├── firestore.rules       # Firestore security rules
-│   └── firestore.indexes.json
+├── Docs/
+│   ├── Architecture.md
+│   ├── Firestore_schema.md
+│   └── Initial_crm_database.md
 │
-├── docs/                     # Project documentation
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── firebase/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   ├── styles/
+│   │   └── types/
+│   ├── package.json
+│   └── vite.config.ts
 │
-└── .github/                  # GitHub Actions and repository configuration
+├── package.json
+├── pnpm-workspace.yaml
+└── README.md
 ```
 
-## Getting Started
+---
 
-### Prerequisites
+# 3. Ownership Rules
 
-Make sure you have the following installed:
+## 🔵 Sheran — Frontend Developer
 
-- **Node.js 22**
-- **pnpm 10+**
-- Access to the project's Firebase environment
+Sheran is mainly responsible for the frontend application.
 
-Check your versions:
+### Main folders
+
+```text
+frontend/src/pages/
+frontend/src/components/
+frontend/src/assets/
+frontend/src/hooks/
+frontend/src/styles/
+```
+
+### Main files
+
+```text
+frontend/src/App.tsx
+frontend/src/App.css
+frontend/src/index.css
+```
+
+Sheran can create and modify:
+
+- Pages
+- Buttons
+- Forms
+- Tables
+- Cards
+- Navigation
+- Layouts
+- Filters
+- Search UI
+- Modals
+- Loading states
+- Error messages
+- Responsive behaviour
+- User interactions
+
+### Current frontend pages
+
+```text
+Dashboard.tsx
+Organisations.tsx
+OrganisationProfile.tsx
+Opportunities.tsx
+Pipeline.tsx
+Activities.tsx
+Login.tsx
+AdminUsers.tsx
+```
+
+### Coordinate before changing
+
+```text
+frontend/src/types/
+frontend/src/context/
+frontend/src/firebase/
+frontend/src/App.tsx
+```
+
+These areas can affect authentication, database communication or multiple parts of the application.
+
+---
+
+# 4. 🟢 Anay — Backend & Database Developer
+
+Anay is mainly responsible for backend and database development.
+
+### Main backend folder
+
+```text
+backend/
+```
+
+### Main areas
+
+```text
+backend/src/routes/
+backend/src/middleware/
+backend/src/services/
+backend/src/lib/
+backend/data/
+```
+
+### Backend responsibilities
+
+- Backend logic
+- API routes
+- Database operations
+- Firestore operations
+- Data validation
+- Database relationships
+- Data processing
+- Backend services
+- Authentication-related backend logic
+- Firebase/Firestore security
+- Seed data
+
+### Database documentation
+
+Anay should also coordinate changes to:
+
+```text
+Docs/Firestore_schema.md
+Docs/Initial_crm_database.md
+```
+
+### Important
+
+The current frontend still uses:
+
+```text
+frontend/src/firebase/
+├── auth.ts
+├── config.ts
+└── firestore.ts
+```
+
+These files should **not be moved or deleted just because the `backend/` folder exists**.
+
+If the architecture changes from:
+
+```text
+Frontend → Firebase/Firestore
+```
+
+to:
+
+```text
+Frontend → Backend → Firebase/Firestore
+```
+
+the migration should be planned and coordinated before changing the existing Firebase implementation.
+
+---
+
+# 5. 🟣 Sienna — UX/UI Designer
+
+Sienna is responsible for the visual design and user experience of the application.
+
+### Main areas
+
+```text
+frontend/src/components/
+frontend/src/pages/
+frontend/src/assets/
+frontend/src/styles/
+```
+
+### Sienna can work on
+
+- UI layouts
+- Figma implementation
+- Colours
+- Typography
+- Spacing
+- Buttons
+- Cards
+- Forms
+- Navigation
+- Responsive design
+- Visual consistency
+- User experience
+- Component appearance
+
+### Main styling files
+
+```text
+frontend/src/App.css
+frontend/src/index.css
+frontend/src/styles/globals.css
+frontend/src/styles/theme.css
+```
+
+Sienna should coordinate with Sheran when UI changes require changes to frontend functionality.
+
+Sienna should not change backend, database or Firebase logic without coordinating with Anay.
+
+---
+
+# 6. 🟠 Semih — Project Manager & Documentation
+
+Semih is responsible for project management, coordination and project documentation.
+
+### Main documentation area
+
+```text
+Docs/
+```
+
+Semih can create and update documentation such as:
+
+```text
+Docs/Architecture.md
+Docs/Firestore_schema.md
+Docs/Initial_crm_database.md
+```
+
+Semih can also add new documentation files when required.
+
+Examples:
+
+```text
+Docs/Requirements.md
+Docs/Testing.md
+Docs/Security.md
+Docs/Git_Workflow.md
+Docs/CI_CD.md
+Docs/Client_Validation.md
+```
+
+### Semih responsibilities
+
+- Project planning
+- Sprint coordination
+- Team coordination
+- Documentation
+- Meeting records
+- Project status
+- Deliverables
+- Client communication
+- Keeping project documentation organised
+
+Technical documentation should be checked with the relevant developer before being treated as final.
+
+For example:
+
+```text
+Database documentation → Anay
+Frontend documentation → Sheran
+UI/UX documentation → Sienna
+Requirements → Nicholas
+Project documentation → Semih
+```
+
+---
+
+# 7. 🟡 Nicholas — Business Analyst / Cross-Team Support
+
+Can work across the project when required.
+
+### Main responsibilities
+
+- Requirements
+- Business analysis
+- User stories
+- Acceptance criteria
+- Business rules
+- Workflow decisions
+- Scope
+- Client validation
+- Requirements traceability
+- Reviewing implementation against requirements
+- Cross-team support
+
+### Can work across
+
+```text
+Docs/
+frontend/
+backend/
+```
+
+Can assist with:
+
+```text
+Frontend → Sheran
+Backend → Anay
+UX/UI → Sienna
+Documentation → Semih
+Architecture → Relevant developers
+```
+
+Major technical changes should still be coordinated with the responsible developer.
+
+---
+
+# 8. 🔴 Files That Should NOT Be Edited Casually
+
+The following files affect the entire project and can cause the application to stop building if changed incorrectly.
+
+## `package.json`
+
+Controls:
+
+- Dependencies
+- React
+- Firebase
+- Vite
+- TypeScript
+- Build scripts
+
+### Rule
+
+**Do not install, remove or upgrade packages without discussing it with the team.**
+
+For example, do not randomly run:
 
 ```bash
-node --version
-pnpm --version
+pnpm add some-package
 ```
 
-### Installation
+without telling the team.
 
-Clone the repository:
+---
 
-```bash
-git clone <repository-url>
-cd FSC-client-relationship-management-Team-A
-```
+## `pnpm-lock.yaml`
 
-Install dependencies:
+This file records the exact dependency versions used by the project.
+
+### Rule
+
+Do not manually edit this file.
+
+If `package.json` changes, use:
 
 ```bash
 pnpm install
 ```
 
-### Environment Setup
-
-The application uses Firebase for authentication, database functionality and backend services.
-
-Environment variables should be configured according to the project's environment configuration.
-
-Do **not** commit:
-
-- `.env`
-- `.env.local`
-- Firebase service account credentials
-- API keys
-- Private keys
-- Other secrets
-
-For the required environment variables, refer to:
-
-```text
-docs/ENV-VARS.md
-```
-
-### Run the Development Server
-
-From the repository root:
-
-```bash
-pnpm run dev
-```
-
-The React frontend will normally be available at:
-
-```text
-http://localhost:5173
-```
-
-The exact port may vary depending on the Vite configuration.
-
-## Available Commands
-
-Run commands from the repository root.
-
-```bash
-pnpm run dev              # Start the React/Vite development server
-pnpm run build            # Build the frontend
-pnpm run test             # Run backend tests
-pnpm run test:component   # Run frontend component tests
-pnpm run test:all         # Run all tests
-pnpm run lint             # Run ESLint
-pnpm run format           # Format the project with Prettier
-pnpm run typecheck        # Run TypeScript checks
-pnpm run validate         # Check for unreplaced placeholders
-```
-
-## Testing
-
-The project uses:
-
-- **Vitest** for unit testing
-- **Testing Library** for React component testing
-- **Supertest** for backend/API testing
-
-Run backend tests:
-
-```bash
-pnpm run test
-```
-
-Run frontend tests:
-
-```bash
-pnpm run test:component
-```
-
-Run all tests:
-
-```bash
-pnpm run test:all
-```
-
-Before submitting a pull request, make sure the relevant tests pass.
-
-## Security
-
-Security is an important part of the project.
-
-The application uses several security mechanisms, including:
-
-- Firebase Authentication
-- Server-side authentication checks
-- Session management
-- Firestore security rules
-- Zod input validation
-- HTTP security headers
-- CORS configuration
-- Rate limiting
-- Dependency vulnerability scanning
-- GitHub Actions CI checks
-
-Run the dependency security audit with:
-
-```bash
-pnpm audit
-```
-
-The repository should have **no known vulnerabilities** before changes are merged.
-
-## Git Workflow
-
-The project uses feature branches and pull requests.
-
-| Branch | Purpose |
-|---|---|
-| `main` | Stable project branch |
-| `feature/*` | New functionality |
-| `fix/*` | Bug fixes |
-| `hotfix/*` | Urgent fixes |
-
-### Creating a Feature Branch
-
-Start from the latest `main`:
-
-```bash
-git checkout main
-git pull origin main
-```
-
-Create a feature branch:
-
-```bash
-git checkout -b feature/<feature-name>
-```
-
-Example:
-
-```bash
-git checkout -b feature/client-management
-```
-
-### Commit Messages
-
-This repository uses **Conventional Commits**.
-
-Examples:
-
-```bash
-git commit -m "feat: add client management"
-git commit -m "fix: resolve authentication redirect"
-git commit -m "test: add client route tests"
-git commit -m "docs: update project setup instructions"
-git commit -m "chore: update dependencies"
-```
-
-Pull requests should be opened against `main`.
-
-## Pull Requests
-
-Before creating a pull request:
-
-1. Make sure your branch is up to date.
-2. Run the relevant tests.
-3. Run the build.
-4. Run the security audit.
-5. Make sure there are no unnecessary changes.
-6. Push your branch.
-7. Create a pull request against `main`.
-
-Recommended checks:
-
-```bash
-pnpm run test
-pnpm run test:component
-pnpm run build
-pnpm audit
-```
-
-### Security Checks and Pull Requests
-
-Pull requests may be blocked if the repository security checks detect high or critical dependency vulnerabilities.
-
-If this happens, check:
-
-```bash
-pnpm audit
-```
-
-Address the reported vulnerability before attempting to merge the pull request again.
-
-## Team Roles & Responsibilities
-
-The project is being developed by a team working across different areas of the system.
-
-| Role | Responsibility |
-|---|---|
-| **PM** | Planning, coordination and project tracking |
-| **BA** | Requirements, business processes and stakeholder needs |
-| **Dev1** | Frontend and coding design |
-| **Dev2** | Backend and database implementation |
-| **UX/UI** | User experience, interface design and usability |
-| **BA / Tester** | Test planning, execution and defect reporting |
-
-See the project's requirements and documentation for the current team members and responsibilities.
-
-## Team Roles & Folder Ownership
-
-| Role | Person | Primary Folders |
-|---|---|---|
-| BA (fullstack support) | Nicholas | `docs/`, `frontend/src/types/`, `frontend/src/lib/validations/`, cross-review on `firebase/firestore.rules` |
-| Frontend Dev | Sheran | `frontend/src/pages/`, `frontend/src/hooks/`, `frontend/src/lib/` |
-| UX/UI | Sienna | Styling within `frontend/src/components/`, pairs with Frontend Dev — does not touch data-fetching logic |
-| Backend Dev | Anay | `backend/src/routes/`, `backend/src/middleware/`, `backend/src/triggers/`, `firebase/firestore.rules` |
-
-**Never-solo-edit files** — always coordinate before changing, regardless of role:
-
-```text
-frontend/src/types/firestore.ts
-firebase/firestore.rules
-Sidebar.tsx
-pnpm-workspace.yaml
-```
-
-See `docs/GIT-WORKFLOW.md` for branch naming.
-
-Use:
-
-```text
-feature/<name>-<short-desc>
-```
-
-Example:
-
-```text
-feature/sheran-org-directory-page
-```
-
-This helps make overlapping work visible through branch names.
-
-## Documentation
-
-Project documentation is maintained in the `docs/` directory.
-
-Important documentation includes:
-
-| Document | Description |
-|---|---|
-| `docs/ARCHITECTURE.md` | System architecture and technical design |
-| `docs/ENV-VARS.md` | Environment variable configuration |
-| `docs/TESTING.md` | Testing approach and test conventions |
-| `docs/SECURITY.md` | Security practices |
-| `docs/GIT-WORKFLOW.md` | Git and branch workflow |
-| `docs/CI-CD.md` | Continuous integration and deployment |
-
-Additional project documentation should be added to `docs/` as the system develops.
-
-## Deployment
-
-The frontend React application is deployed using **Vercel**.
-
-The backend uses **Firebase Cloud Functions**.
-
-Deployment configuration should be maintained separately from local development configuration, and production credentials must never be committed to the repository.
-
-## Project Status
-
-The system is currently under active development.
-
-Features and functionality will be added progressively according to the project's requirements, backlog and development plan.
-
-## Team
-
-**45-Client and PRM — Team A**
-
-This repository contains the team's implementation of the Client & Partner Relationship Management System for the Food Systems Collective.
+and commit the resulting lockfile.
 
 ---
 
-**Project:** Food Systems Collective — Client & Partner Relationship Management System
-**Repository:** FSC-client-relationship-management-Team-A
+## `pnpm-workspace.yaml`
+
+This controls the pnpm workspace.
+
+### Rule
+
+**Do not change this file unless the team agrees.**
+
+Current configuration:
+
+```yaml
+packages:
+  - frontend
+```
+
+Changes to the workspace configuration can affect local installs and Vercel builds.
+
+---
+
+# 9. TypeScript Configuration
+
+These files include:
+
+```text
+frontend/tsconfig.json
+frontend/tsconfig.app.json
+frontend/tsconfig.node.json
+```
+
+### Rule
+
+Treat these as **view-only unless a configuration change is specifically required**.
+
+Changing TypeScript settings can cause many unrelated files to fail compilation.
+
+---
+
+# 10. Vite Configuration
+
+Location:
+
+```text
+frontend/vite.config.ts
+```
+
+### Rule
+
+View-only unless the team agrees that a Vite configuration change is required.
+
+---
+
+# 11. Application Entry Point
+
+Location:
+
+```text
+frontend/src/main.tsx
+```
+
+This is the application's entry point.
+
+### Rule
+
+Do not modify unless necessary.
+
+Changes can affect the entire frontend application.
+
+---
+
+# 12. Firebase Files
+
+Current Firebase files:
+
+```text
+frontend/src/firebase/
+├── auth.ts
+├── config.ts
+└── firestore.ts
+```
+
+These files are currently used by the frontend.
+
+### Rule
+
+**Do not move, rename or delete these files without coordinating with Anay and Nicholas.**
+
+Changes can affect:
+
+- Login
+- Google authentication
+- Firestore
+- User profiles
+- Organisation data
+- Firebase configuration
+
+---
+
+# 13. Shared Files
+
+Some files affect multiple team members and should be treated as shared files.
+
+Examples:
+
+```text
+frontend/src/types/
+frontend/src/context/
+frontend/src/firebase/
+frontend/src/App.tsx
+package.json
+pnpm-workspace.yaml
+```
+
+### Rule
+
+Before making a major change to a shared file:
+
+1. Tell the relevant team member.
+2. Explain what is being changed.
+3. Make sure the change does not conflict with current work.
+4. Run the build/test after the change.
+5. Commit the change clearly.
+
+---
+
+# 14. Git Workflow
+
+Before starting work:
+
+```bash
+git pull
+```
+
+Create a branch for significant work:
+
+```bash
+git checkout -b feature/your-feature-name
+```
+
+Example:
+
+```bash
+git checkout -b feature/organisation-search
+```
+
+After making changes:
+
+```bash
+git status
+git add .
+git commit -m "Add organisation search"
+git push -u origin feature/organisation-search
+```
+
+Before merging, make sure the project builds successfully.
+
+For the frontend:
+
+```bash
+pnpm --filter frontend run build
+```
+
+---
+
+# 15. Important Team Rule
+
+### Do not edit another person's main area without communication.
+
+| Area | Responsible Person |
+|---|---|
+| Backend | **Anay** |
+| Database / Firestore | **Anay** |
+| Frontend | **Sheran** |
+| UX/UI | **Sienna** |
+| Documentation / PM | **Semih** |
+| Requirements / BA | **Nicholas** |
+| Cross-team technical support | **Nicholas + relevant developer** |
+
+This does not mean team members are completely restricted from other areas.
+
+It means the responsible person should be informed before major changes are made.
+
+---
+
+# 16. Before Pushing Code
+
+Run:
+
+```bash
+git status
+```
+
+Then check that you have not accidentally modified unrelated files.
+
+For frontend changes:
+
+```bash
+pnpm --filter frontend run build
+```
+
+If the build fails, fix the issue before pushing.
+
+Do not push broken code to `main`.
+
+---
+
+# 17. Golden Rule
+
+> **Own your area, communicate before changing shared files, and always test before pushing.**
+
+The purpose of this structure is not to stop team members from helping each other.
+
+It is to prevent:
+
+- Broken builds
+- Merge conflicts
+- Firebase problems
+- Accidental database changes
+- Unintended UI changes
+- Dependency conflicts
+- Vercel deployment failures
+- Confusion about who is responsible for a file
