@@ -1,0 +1,103 @@
+:root {
+  /* =========================================
+     BRAND
+  ========================================= */
+
+  --brand-primary: #4f46e5;
+  --brand-primary-hover: #4338ca;
+  --brand-primary-light: #e4e8ff;
+
+
+  /* =========================================
+     BACKGROUNDS
+  ========================================= */
+
+  --background: #eef0f2;
+  --surface: #f8f8f8;
+  --surface-secondary: #e9edf2;
+  --sidebar-background: #f7f7f7;
+  --table-header-background: #e4e8ed;
+
+
+  /* =========================================
+     TEXT
+  ========================================= */
+
+  --text-primary: #172033;
+  --text-secondary: #53627a;
+  --text-muted: #718096;
+  --text-light: #61718a;
+
+
+  /* =========================================
+     BORDERS
+  ========================================= */
+
+  --border: #d4dbe3;
+  --border-light: #d8dde3;
+
+
+  /* =========================================
+     STATUS
+  ========================================= */
+
+  --status-active-background: #dff3ea;
+  --status-active-text: #149b6c;
+
+  --status-inactive-background: #e7ebef;
+  --status-inactive-text: #536278;
+
+
+  /* =========================================
+     PRIORITY
+  ========================================= */
+
+  --priority-high-background: #fde4e4;
+  --priority-high-text: #dc3d3d;
+
+  --priority-medium-background: #f9edbd;
+  --priority-medium-text: #ad8500;
+
+  --priority-low-background: #dff3ea;
+  --priority-low-text: #149b6c;
+
+
+  /* =========================================
+     TYPOGRAPHY
+  ========================================= */
+
+  --font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  --heading-weight: 700;
+  --body-weight: 400;
+
+
+  /* =========================================
+     BORDER RADIUS
+  ========================================= */
+
+  --radius-small: 7px;
+  --radius-medium: 10px;
+  --radius-large: 13px;
+
+
+  /* =========================================
+     SPACING
+  ========================================= */
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+
+  /* =========================================
+     SIDEBAR
+  ========================================= */
+
+  --sidebar-width: 280px;
+}
