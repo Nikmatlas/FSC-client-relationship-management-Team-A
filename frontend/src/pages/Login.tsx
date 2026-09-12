@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { createUserProfile, getUserProfile } from "../firebase/firestore";
+import { useNavigate } from "react-router-dom";
+
+import {
+  createUserProfile,
+  getUserProfile,
+} from "../firebase/firestore";
 
 import {
   loginUser,
@@ -8,57 +13,70 @@ import {
 } from "../firebase/auth";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState("");
 
   const handleEmailAuth = async () => {
-  try {
-    setError("");
+    try {
+      setError("");
 
-    if (isRegistering) {
-      await registerUser(email, password);
-    } else {
-      await loginUser(email, password);
+      if (isRegistering) {
+        const result = await registerUser(email, password);
+
+        await createUserProfile(
+          result.user.uid,
+          result.user.email ?? "",
+          result.user.displayName ?? "",
+          result.user.photoURL ?? "",
+        );
+      } else {
+        await loginUser(email, password);
+      }
+
+      console.log("Authentication successful");
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Authentication failed.");
+      }
     }
-
-    console.log("Authentication successful");
-  } catch (error) {
-    console.error(error);
-
-    if (error instanceof Error) {
-      setError(error.message);
-    } else {
-      setError("Authentication failed.");
-    }
-  }
-};
+  };
 
   const handleGoogleLogin = async () => {
-  try {
-    setError("");
+    try {
+      setError("");
 
-    const result = await loginWithGoogle();
-    const user = result.user;
+      const result = await loginWithGoogle();
+      const user = result.user;
 
-    const existingProfile = await getUserProfile(user.uid);
+      const existingProfile = await getUserProfile(user.uid);
 
-    if (!existingProfile) {
-      await createUserProfile(
-        user.uid,
-        user.email ?? "",
-        user.displayName ?? "",
-        user.photoURL ?? "",
-      );
+      if (!existingProfile) {
+        await createUserProfile(
+          user.uid,
+          user.email ?? "",
+          user.displayName ?? "",
+          user.photoURL ?? "",
+        );
+      }
+
+      console.log("Google authentication successful");
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      setError("Google sign-in failed.");
     }
-
-    console.log("Google authentication successful");
-  } catch (error) {
-    console.error(error);
-    setError("Google sign-in failed.");
-  }
-};
+  };
 
   return (
     <main>
