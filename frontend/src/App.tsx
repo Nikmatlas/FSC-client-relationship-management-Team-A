@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Organisations from "./pages/Organisations";
 import  AdminUsers from "./pages/AdminUsers";
+import OrganisationsTestBackend from "./pages/OrganisationsTestBackend"; //for backend testing only. Front end use only Organisations.tsx.
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminRoute from "./components/auth/AdminRoute";
@@ -29,10 +30,9 @@ function App() {
             />
 
             <Route element={<AdminRoute />}>
-              <Route
-                path="/admin/users"
-                element={<AdminUsers />}
-              />
+              {/* for backend testing only */}
+              <Route path="/organisations-test-backend" element={<OrganisationsTestBackend />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
             </Route>
           </Route>
         </Routes>
