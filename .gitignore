@@ -2,3 +2,5 @@ node_modules
 frontend/.env.local
 .env
 .env.local
+.env
+.env.local
