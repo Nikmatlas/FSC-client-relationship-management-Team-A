@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import OrganisationProfile from "./pages/OrganisationProfile";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Organisations from "./pages/Organisations";
@@ -17,7 +17,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Login />} />
-
+          
           <Route element={<ProtectedRoute />}>
             <Route
               path="/dashboard"
@@ -27,6 +27,11 @@ function App() {
             <Route
               path="/organisations"
               element={<Organisations />}
+            />
+
+            <Route
+              path="/organisations/:id"
+              element={<OrganisationProfile />}
             />
 
             <Route element={<AdminRoute />}>
