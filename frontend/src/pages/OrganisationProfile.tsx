@@ -47,8 +47,7 @@ function readStakeholder(stakeholder: Stakeholder | undefined) {
     return null;
   }
 
-  const record = stakeholder as Record<string, unknown>;
-
+  const record = stakeholder as unknown as Record<string, unknown>;
   return {
     name: record.name ? String(record.name) : "",
     role: record.role ? String(record.role) : "",
