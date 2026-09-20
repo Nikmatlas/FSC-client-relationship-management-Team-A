@@ -266,3 +266,26 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================
+   SEARCH ICON
+========================================= */
+
+.directory-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.directory-search-icon {
+  position: absolute;
+  left: 13px;
+
+  color: var(--text-light);
+  pointer-events: none;
+}
+
+.directory-search-wrap .directory-search {
+  padding-left: 40px;
+}
