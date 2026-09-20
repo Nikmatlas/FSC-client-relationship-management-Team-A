@@ -179,7 +179,7 @@ export default function Organisations() {
         <header className="directory-header">
           <div>
             <h1>View All Organisations</h1>
-            <p>Manage FSC organisations and relationships.</p>
+            <p>Manage FSC's organisations and relationships.</p>
           </div>
 
           <button
