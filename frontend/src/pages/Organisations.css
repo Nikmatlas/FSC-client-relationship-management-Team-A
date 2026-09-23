@@ -289,3 +289,35 @@
 .directory-search-wrap .directory-search {
   padding-left: 40px;
 }
+
+
+/* =========================================
+   LOAD MORE
+========================================= */
+
+.directory-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.directory-footer .directory-count {
+  margin-top: 0;
+}
+
+.directory-load-more {
+  padding: 10px 24px;
+  border: 1px solid var(--border-color, #d9dde3);
+  border-radius: var(--radius-medium);
+  background: var(--card-background, #ffffff);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.directory-load-more:hover {
+  background: var(--hover-background, #f3f4f6);
+}

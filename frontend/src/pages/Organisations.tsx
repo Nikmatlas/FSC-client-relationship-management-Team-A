@@ -56,6 +56,8 @@ const emptyForm = {
   archived: false,
 };
 
+const PAGE_SIZE = 6;
+
 export default function Organisations() {
   const [organisations, setOrganisations] = useState<Organisation[]>([]);
   const [search, setSearch] = useState("");
@@ -63,6 +65,7 @@ export default function Organisations() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const [form, setForm] = useState(emptyForm);
 
@@ -171,6 +174,8 @@ export default function Organisations() {
     });
   }, [organisations, search]);
 
+  const visibleOrganisations = filteredOrganisations.slice(0, visibleCount);
+
   return (
     <div className="dashboard">
       <Sidebar />
@@ -198,7 +203,10 @@ export default function Organisations() {
             className="directory-search"
             placeholder="Search organisations by name or pipeline status..."
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setVisibleCount(PAGE_SIZE);
+            }}
           />
         </div>
 
@@ -209,7 +217,7 @@ export default function Organisations() {
         ) : (
           <>
             <div className="directory-grid">
-              {filteredOrganisations.map((organisation) => (
+              {visibleOrganisations.map((organisation) => (
                 <Link
                   key={organisation.id}
                   to={`/organisations/${organisation.id}`}
@@ -255,10 +263,24 @@ export default function Organisations() {
               ))}
             </div>
 
-            <p className="directory-count">
-              Showing {filteredOrganisations.length} of{" "}
-              {organisations.length} organisations
-            </p>
+            <div className="directory-footer">
+              <p className="directory-count">
+                Showing {visibleOrganisations.length} of{" "}
+                {filteredOrganisations.length} organisations
+              </p>
+
+              {visibleCount < filteredOrganisations.length && (
+                <button
+                  type="button"
+                  className="directory-load-more"
+                  onClick={() =>
+                    setVisibleCount((count) => count + PAGE_SIZE)
+                  }
+                >
+                  Load More
+                </button>
+              )}
+            </div>
           </>
         )}
 
