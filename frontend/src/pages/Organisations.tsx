@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Building2, User } from "lucide-react";
 import {
   createOrganisation,
+  createStakeholder,
   getOrganisations,
 } from "../firebase/firestore";
 import type {
@@ -14,36 +15,21 @@ import Sidebar from "../components/Sidebar";
 import "./Dashboard.css";
 import "./Organisations.css";
 
-const pipelineStages: PipelineStage[] = [
-  "Prospect",
-  "Research",
-  "Qualified",
-  "Outreach",
-  "Follow-up",
-  "Meeting",
-  "Proposal",
-  "Negotiation",
-  "Partnership",
-  "Active Relationship",
-  "Completed",
-  "Archived",
-];
-
 const relationshipStatuses: RelationshipStatus[] = [
-  "prospect",
   "active",
   "inactive",
 ];
 
 const emptyForm = {
   name: "",
+  contactName: "",
   type: "",
   industry: "",
   country: "",
   website: "",
   email: "",
   phone: "",
-  relationshipStatus: "prospect" as RelationshipStatus,
+  relationshipStatus: "active" as RelationshipStatus,
   pipelineStage: "Prospect" as PipelineStage,
   ownerId: "",
   tags: "",
@@ -56,6 +42,8 @@ const emptyForm = {
   archived: false,
 };
 
+const PAGE_SIZE = 6;
+
 export default function Organisations() {
   const [organisations, setOrganisations] = useState<Organisation[]>([]);
   const [search, setSearch] = useState("");
@@ -63,6 +51,7 @@ export default function Organisations() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const [form, setForm] = useState(emptyForm);
 
@@ -108,7 +97,7 @@ export default function Organisations() {
       setSaving(true);
       setError("");
 
-      await createOrganisation({
+      const organisationRef = await createOrganisation({
         name: form.name.trim(),
         type: form.type.trim(),
         industry: form.industry.trim(),
@@ -139,6 +128,18 @@ export default function Organisations() {
 
         archived: form.archived,
       });
+
+      if (form.contactName.trim()) {
+        await createStakeholder({
+          organisationId: organisationRef.id,
+          name: form.contactName.trim(),
+          position: "",
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          isPrimary: true,
+          notes: "",
+        });
+      }
 
       setForm(emptyForm);
       setShowForm(false);
@@ -171,6 +172,8 @@ export default function Organisations() {
     });
   }, [organisations, search]);
 
+  const visibleOrganisations = filteredOrganisations.slice(0, visibleCount);
+
   return (
     <div className="dashboard">
       <Sidebar />
@@ -178,8 +181,8 @@ export default function Organisations() {
       <main className="dashboard-main">
         <header className="directory-header">
           <div>
-            <h1>Organisations</h1>
-            <p>Manage FSC organisations and relationships.</p>
+            <h1>View All Organisations</h1>
+            <p>Manage FSC's organisations and relationships.</p>
           </div>
 
           <button
@@ -198,7 +201,10 @@ export default function Organisations() {
             className="directory-search"
             placeholder="Search organisations by name or pipeline status..."
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setVisibleCount(PAGE_SIZE);
+            }}
           />
         </div>
 
@@ -209,7 +215,7 @@ export default function Organisations() {
         ) : (
           <>
             <div className="directory-grid">
-              {filteredOrganisations.map((organisation) => (
+              {visibleOrganisations.map((organisation) => (
                 <Link
                   key={organisation.id}
                   to={`/organisations/${organisation.id}`}
@@ -255,10 +261,24 @@ export default function Organisations() {
               ))}
             </div>
 
-            <p className="directory-count">
-              Showing {filteredOrganisations.length} of{" "}
-              {organisations.length} organisations
-            </p>
+            <div className="directory-footer">
+              <p className="directory-count">
+                Showing {visibleOrganisations.length} of{" "}
+                {filteredOrganisations.length} organisations
+              </p>
+
+              {visibleCount < filteredOrganisations.length && (
+                <button
+                  type="button"
+                  className="directory-load-more"
+                  onClick={() =>
+                    setVisibleCount((count) => count + PAGE_SIZE)
+                  }
+                >
+                  Load More
+                </button>
+              )}
+            </div>
           </>
         )}
 
@@ -296,49 +316,39 @@ export default function Organisations() {
               />
 
               <FormField
-                label="Type"
-                value={form.type}
-                onChange={(value) => updateField("type", value)}
-              />
-
-              <FormField
-                label="Industry"
+                label="Industry Type"
                 value={form.industry}
                 onChange={(value) => updateField("industry", value)}
               />
 
               <FormField
-                label="Country"
+                label="Primary Contact Name"
+                value={form.contactName}
+                onChange={(value) => updateField("contactName", value)}
+              />
+
+              <FormField
+                label="Primary Contact Email"
+                value={form.email}
+                onChange={(value) => updateField("email", value)}
+                type="email"
+              />
+
+              <FormField
+                label="Primary Contact Phone"
+                value={form.phone}
+                onChange={(value) => updateField("phone", value)}
+                type="tel"
+              />
+
+              <FormField
+                label="Location"
                 value={form.country}
                 onChange={(value) => updateField("country", value)}
               />
 
-              <FormField
-                label="Website"
-                value={form.website}
-                onChange={(value) => updateField("website", value)}
-              />
-
-              <FormField
-                label="Email"
-                value={form.email}
-                onChange={(value) => updateField("email", value)}
-              />
-
-              <FormField
-                label="Phone"
-                value={form.phone}
-                onChange={(value) => updateField("phone", value)}
-              />
-
-              <FormField
-                label="Owner ID"
-                value={form.ownerId}
-                onChange={(value) => updateField("ownerId", value)}
-              />
-
               <label style={labelStyle}>
-                Relationship Status
+                Status
                 <select
                   value={form.relationshipStatus}
                   onChange={(event) =>
@@ -348,90 +358,24 @@ export default function Organisations() {
                 >
                   {relationshipStatuses.map((status) => (
                     <option key={status} value={status}>
-                      {status}
+                      {status.charAt(0).toUpperCase() + status.slice(1)}
                     </option>
                   ))}
                 </select>
               </label>
 
-              <label style={labelStyle}>
-                Pipeline Stage
-                <select
-                  value={form.pipelineStage}
-                  onChange={(event) =>
-                    updateField("pipelineStage", event.target.value)
-                  }
-                  style={inputStyle}
+              <div className="directory-form-actions">
+                <button
+                  type="submit"
+                  className="directory-form-create"
+                  disabled={saving}
                 >
-                  {pipelineStages.map((stage) => (
-                    <option key={stage} value={stage}>
-                      {stage}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                  {saving ? "Saving..." : "Create Organisation"}
+                </button>
 
-              <FormField
-                label="Tags"
-                value={form.tags}
-                onChange={(value) => updateField("tags", value)}
-                placeholder="food, NGO, partner"
-              />
-
-              <FormField
-                label="Lead Score"
-                value={String(form.leadScore)}
-                onChange={(value) =>
-                  updateField("leadScore", Number(value) || 0)
-                }
-                type="number"
-              />
-
-              <FormField
-                label="Research Status"
-                value={form.researchStatus}
-                onChange={(value) => updateField("researchStatus", value)}
-              />
-
-              <FormField
-                label="Business Brief"
-                value={form.businessBrief}
-                onChange={(value) => updateField("businessBrief", value)}
-                textarea
-              />
-
-              <FormField
-                label="Notes"
-                value={form.notes}
-                onChange={(value) => updateField("notes", value)}
-                textarea
-              />
-
-              <FormField
-                label="Next Action"
-                value={form.nextAction}
-                onChange={(value) => updateField("nextAction", value)}
-              />
-
-              <FormField
-                label="Next Follow-up Date"
-                value={form.nextFollowUpDate}
-                onChange={(value) =>
-                  updateField("nextFollowUpDate", value)
-                }
-                type="date"
-              />
-
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  justifyContent: "flex-end",
-                  marginTop: "20px",
-                }}
-              >
                 <button
                   type="button"
+                  className="directory-form-cancel"
                   onClick={() => {
                     setShowForm(false);
                     setForm(emptyForm);
@@ -439,10 +383,6 @@ export default function Organisations() {
                   }}
                 >
                   Cancel
-                </button>
-
-                <button type="submit" disabled={saving}>
-                  {saving ? "Saving..." : "Create Organisation"}
                 </button>
               </div>
             </form>

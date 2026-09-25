@@ -266,3 +266,95 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================
+   SEARCH ICON
+========================================= */
+
+.directory-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.directory-search-icon {
+  position: absolute;
+  left: 13px;
+
+  color: var(--text-light);
+  pointer-events: none;
+}
+
+.directory-search-wrap .directory-search {
+  padding-left: 40px;
+}
+
+
+/* =========================================
+   LOAD MORE
+========================================= */
+
+.directory-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.directory-footer .directory-count {
+  margin-top: 0;
+}
+
+.directory-load-more {
+  padding: 10px 24px;
+  border: 1px solid var(--border-color, #d9dde3);
+  border-radius: var(--radius-medium);
+  background: var(--card-background, #ffffff);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.directory-load-more:hover {
+  background: var(--hover-background, #f3f4f6);
+}
+
+
+/* =========================================
+   ADD ORGANISATION FORM BUTTONS
+========================================= */
+
+.directory-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.directory-form-create,
+.directory-form-cancel {
+  padding: 9px 18px;
+  border: none;
+  border-radius: var(--radius-medium);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.directory-form-create {
+  background: var(--status-active-background);
+  color: var(--status-active-text);
+}
+
+.directory-form-cancel {
+  background: var(--priority-high-background);
+  color: var(--priority-high-text);
+}
+
+.directory-form-create:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
