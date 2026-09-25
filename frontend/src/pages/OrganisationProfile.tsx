@@ -118,10 +118,6 @@ type EditFields = {
   relationshipStatus: RelationshipStatus;
   pipelineStage: PipelineStage;
   ownerId: string;
-  leadScore: number;
-  researchStatus: string;
-  businessBrief: string;
-  nextAction: string;
 };
 
 function toEditFields(organisation: Organisation): EditFields {
@@ -136,10 +132,6 @@ function toEditFields(organisation: Organisation): EditFields {
     relationshipStatus: organisation.relationshipStatus ?? "prospect",
     pipelineStage: organisation.pipelineStage ?? "Prospect",
     ownerId: organisation.ownerId ?? "",
-    leadScore: organisation.leadScore ?? 0,
-    researchStatus: organisation.researchStatus ?? "",
-    businessBrief: organisation.businessBrief ?? "",
-    nextAction: organisation.nextAction ?? "",
   };
 }
 
@@ -235,10 +227,6 @@ export default function OrganisationProfile() {
         relationshipStatus: form.relationshipStatus,
         pipelineStage: form.pipelineStage,
         ownerId: form.ownerId.trim(),
-        leadScore: Number(form.leadScore),
-        researchStatus: form.researchStatus.trim(),
-        businessBrief: form.businessBrief.trim(),
-        nextAction: form.nextAction.trim(),
       });
 
       setEditOpen(false);
@@ -467,13 +455,6 @@ export default function OrganisationProfile() {
                   </span>
                   <p className="profile-value">
                     {formatDate(organisation.createdAt)}
-                  </p>
-                </div>
-
-                <div>
-                  <span className="profile-label">Lead Score</span>
-                  <p className="profile-value">
-                    {show(organisation.leadScore)}
                   </p>
                 </div>
               </div>
@@ -758,51 +739,7 @@ export default function OrganisationProfile() {
                   }
                 />
               </label>
-
-              <label>
-                <span className="profile-label">Lead Score</span>
-                <input
-                  type="number"
-                  value={form.leadScore}
-                  onChange={(event) =>
-                    updateField("leadScore", Number(event.target.value))
-                  }
-                />
-              </label>
-
-              <label>
-                <span className="profile-label">Research Status</span>
-                <input
-                  type="text"
-                  value={form.researchStatus}
-                  onChange={(event) =>
-                    updateField("researchStatus", event.target.value)
-                  }
-                />
-              </label>
             </div>
-
-            <label className="modal-full">
-              <span className="profile-label">Next Action</span>
-              <input
-                type="text"
-                value={form.nextAction}
-                onChange={(event) =>
-                  updateField("nextAction", event.target.value)
-                }
-              />
-            </label>
-
-            <label className="modal-full">
-              <span className="profile-label">Business Brief</span>
-              <textarea
-                rows={3}
-                value={form.businessBrief}
-                onChange={(event) =>
-                  updateField("businessBrief", event.target.value)
-                }
-              />
-            </label>
 
             <div className="modal-actions">
               <button
