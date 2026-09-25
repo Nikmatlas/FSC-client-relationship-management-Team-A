@@ -297,7 +297,7 @@
 
 .directory-footer {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
   margin-top: 24px;
@@ -320,4 +320,41 @@
 
 .directory-load-more:hover {
   background: var(--hover-background, #f3f4f6);
+}
+
+
+/* =========================================
+   ADD ORGANISATION FORM BUTTONS
+========================================= */
+
+.directory-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.directory-form-create,
+.directory-form-cancel {
+  padding: 9px 18px;
+  border: none;
+  border-radius: var(--radius-medium);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.directory-form-create {
+  background: var(--status-active-background);
+  color: var(--status-active-text);
+}
+
+.directory-form-cancel {
+  background: var(--priority-high-background);
+  color: var(--priority-high-text);
+}
+
+.directory-form-create:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
