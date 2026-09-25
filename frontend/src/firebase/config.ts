@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAnVgkoUb5EkUHAqXUzXIaQHwTPma3f7PI",
+  apiKey: "",
   authDomain: "fsc-crm-team-a.firebaseapp.com",
   projectId: "fsc-crm-team-a",
   storageBucket: "fsc-crm-team-a.firebasestorage.app",
