@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Building2, User } from "lucide-react";
+import { Building2, User, X } from "lucide-react";
 import {
   archiveOrganisation,
   getOrganisation,
@@ -267,6 +267,29 @@ export default function OrganisationProfile() {
     } catch (err) {
       console.error(err);
       setError("Failed to add tag.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleRemoveTag(tag: string) {
+    if (!id || !organisation) {
+      return;
+    }
+
+    const remaining = (organisation.tags ?? []).filter(
+      (existingTag) => existingTag !== tag
+    );
+
+    try {
+      setSaving(true);
+      setError("");
+
+      await updateOrganisation(id, { tags: remaining });
+      await load();
+    } catch (err) {
+      console.error(err);
+      setError("Failed to remove tag.");
     } finally {
       setSaving(false);
     }
@@ -545,7 +568,18 @@ export default function OrganisationProfile() {
                 ) : (
                   <ul className="profile-tag-list">
                     {tags.map((tag) => (
-                      <li key={tag}>{tag}</li>
+                      <li key={tag}>
+                        {tag}
+                        <button
+                          type="button"
+                          className="profile-tag-remove"
+                          onClick={() => handleRemoveTag(tag)}
+                          disabled={saving}
+                          aria-label={`Remove tag ${tag}`}
+                        >
+                          <X size={12} />
+                        </button>
+                      </li>
                     ))}
                   </ul>
                 )}
