@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import OrganisationProfile from "./pages/OrganisationProfile";
+import Activities from "./pages/Activities";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Organisations from "./pages/Organisations";
@@ -32,6 +33,11 @@ function App() {
             <Route
               path="/organisations/:id"
               element={<OrganisationProfile />}
+            />
+
+            <Route
+              path="/organisations/:id/activities"
+              element={<Activities />}
             />
 
             <Route element={<AdminRoute />}>

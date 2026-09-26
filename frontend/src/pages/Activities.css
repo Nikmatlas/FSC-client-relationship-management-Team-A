@@ -1,0 +1,184 @@
+/* =========================================
+   ACTIVITY LOGS PAGE
+========================================= */
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+
+  margin-bottom: 20px;
+}
+
+.activity-header h1 {
+  margin: 8px 0 4px;
+}
+
+.activity-subtitle {
+  margin: 0;
+
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.activity-error {
+  padding: 10px 13px;
+  margin: 0 0 16px;
+
+  background: var(--priority-high-background);
+  border-radius: var(--radius-medium);
+
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+
+/* =========================================
+   FILTER TABS
+========================================= */
+
+.activity-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-bottom: 16px;
+}
+
+.activity-tab {
+  padding: 8px 14px;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.activity-tab.is-active {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+
+  color: var(--surface);
+}
+
+
+/* =========================================
+   ACTIVITY LIST
+========================================= */
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.activity-item {
+  overflow: hidden;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-large);
+}
+
+.activity-item-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  padding: 14px 16px;
+
+  background: transparent;
+  border: none;
+
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.activity-item-head:hover {
+  background: var(--surface-secondary);
+}
+
+.activity-type {
+  padding: 3px 8px;
+
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.activity-name {
+  flex: 1;
+
+  font-weight: 600;
+}
+
+.activity-followup {
+  padding: 3px 8px;
+
+  background: var(--status-active-background);
+  border-radius: var(--radius-medium);
+
+  font-size: 12px;
+}
+
+.activity-date {
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+.activity-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px 20px;
+
+  margin: 0;
+  padding: 14px 16px 16px;
+
+  border-top: 1px solid var(--border);
+}
+
+.activity-details dt {
+  margin-bottom: 4px;
+
+  color: var(--text-light);
+  font-size: 12px;
+}
+
+.activity-details dd {
+  margin: 0;
+
+  color: var(--text-primary);
+  font-size: 14px;
+  white-space: pre-wrap;
+}
+
+.activity-empty {
+  padding: 24px;
+
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-large);
+
+  color: var(--text-light);
+  text-align: center;
+}
