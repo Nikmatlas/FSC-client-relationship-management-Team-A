@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Building2, User } from "lucide-react";
 import {
   archiveOrganisation,
@@ -145,6 +145,7 @@ function toEditFields(organisation: Organisation): EditFields {
 
 export default function OrganisationProfile() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [organisation, setOrganisation] = useState<Organisation | null>(null);
   const [stakeholders, setStakeholders] = useState<Stakeholder[]>([]);
@@ -410,8 +411,7 @@ export default function OrganisationProfile() {
             <button
               type="button"
               className="button-amber"
-              disabled
-              title="Activity logs are scheduled for a later sprint"
+              onClick={() => navigate(`/organisations/${id}/activities`)}
             >
               See Recent Activity Logs
             </button>

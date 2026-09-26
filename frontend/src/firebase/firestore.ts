@@ -1,5 +1,6 @@
 import type { Organisation } from "../types/organisation";
 import type { Stakeholder } from "../types/stakeholder";
+import type { Activity } from "../types/activity";
 
 import {
   addDoc,
@@ -200,4 +201,43 @@ export async function deleteStakeholder(
   );
 
   return deleteDoc(stakeholderRef);
+}
+
+// =========================================
+// ACTIVITIES
+// =========================================
+
+export async function createActivity(
+  activity: Omit<Activity, "id" | "createdAt" | "updatedAt">
+) {
+  const activitiesRef = collection(db, "activities");
+
+  return addDoc(activitiesRef, {
+    ...activity,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function getActivitiesByOrganisation(
+  organisationId: string
+): Promise<Activity[]> {
+  const activitiesRef = collection(db, "activities");
+
+  const activitiesQuery = query(
+    activitiesRef,
+    where("organisationId", "==", organisationId)
+  );
+
+  const snapshot = await getDocs(activitiesQuery);
+
+  const activities = snapshot.docs.map((activityDoc) => ({
+    id: activityDoc.id,
+    ...activityDoc.data(),
+  })) as Activity[];
+
+  // Sorted here rather than with orderBy, so no composite index is needed
+  return activities.sort((a, b) =>
+    (b.dateTime || "").localeCompare(a.dateTime || "")
+  );
 }
