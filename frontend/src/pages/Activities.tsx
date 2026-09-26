@@ -82,14 +82,25 @@ export default function Activities() {
 
     let cancelled = false;
 
-    Promise.all([getOrganisation(id), getActivitiesByOrganisation(id)])
-      .then(([record, list]) => {
-        if (cancelled) {
-          return;
+    const loadOrganisation = getOrganisation(id)
+      .then((record) => {
+        if (!cancelled) {
+          setOrganisation(record ?? null);
         }
+      })
+      .catch((err) => {
+        console.error(err);
 
-        setOrganisation(record ?? null);
-        setActivities(list);
+        if (!cancelled) {
+          setError("Failed to load this organisation.");
+        }
+      });
+
+    const loadActivities = getActivitiesByOrganisation(id)
+      .then((list) => {
+        if (!cancelled) {
+          setActivities(list);
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -97,12 +108,13 @@ export default function Activities() {
         if (!cancelled) {
           setError("Failed to load activity logs.");
         }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false);
-        }
       });
+
+    Promise.all([loadOrganisation, loadActivities]).finally(() => {
+      if (!cancelled) {
+        setLoading(false);
+      }
+    });
 
     return () => {
       cancelled = true;
