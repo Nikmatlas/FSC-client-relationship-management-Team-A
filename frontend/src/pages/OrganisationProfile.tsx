@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Building2, User } from "lucide-react";
+import { Building2, User, X } from "lucide-react";
 import {
   archiveOrganisation,
   getOrganisation,
@@ -118,10 +118,6 @@ type EditFields = {
   relationshipStatus: RelationshipStatus;
   pipelineStage: PipelineStage;
   ownerId: string;
-  leadScore: number;
-  researchStatus: string;
-  businessBrief: string;
-  nextAction: string;
 };
 
 function toEditFields(organisation: Organisation): EditFields {
@@ -136,10 +132,6 @@ function toEditFields(organisation: Organisation): EditFields {
     relationshipStatus: organisation.relationshipStatus ?? "prospect",
     pipelineStage: organisation.pipelineStage ?? "Prospect",
     ownerId: organisation.ownerId ?? "",
-    leadScore: organisation.leadScore ?? 0,
-    researchStatus: organisation.researchStatus ?? "",
-    businessBrief: organisation.businessBrief ?? "",
-    nextAction: organisation.nextAction ?? "",
   };
 }
 
@@ -235,10 +227,6 @@ export default function OrganisationProfile() {
         relationshipStatus: form.relationshipStatus,
         pipelineStage: form.pipelineStage,
         ownerId: form.ownerId.trim(),
-        leadScore: Number(form.leadScore),
-        researchStatus: form.researchStatus.trim(),
-        businessBrief: form.businessBrief.trim(),
-        nextAction: form.nextAction.trim(),
       });
 
       setEditOpen(false);
@@ -279,6 +267,29 @@ export default function OrganisationProfile() {
     } catch (err) {
       console.error(err);
       setError("Failed to add tag.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleRemoveTag(tag: string) {
+    if (!id || !organisation) {
+      return;
+    }
+
+    const remaining = (organisation.tags ?? []).filter(
+      (existingTag) => existingTag !== tag
+    );
+
+    try {
+      setSaving(true);
+      setError("");
+
+      await updateOrganisation(id, { tags: remaining });
+      await load();
+    } catch (err) {
+      console.error(err);
+      setError("Failed to remove tag.");
     } finally {
       setSaving(false);
     }
@@ -469,13 +480,6 @@ export default function OrganisationProfile() {
                     {formatDate(organisation.createdAt)}
                   </p>
                 </div>
-
-                <div>
-                  <span className="profile-label">Lead Score</span>
-                  <p className="profile-value">
-                    {show(organisation.leadScore)}
-                  </p>
-                </div>
               </div>
             </section>
 
@@ -564,7 +568,18 @@ export default function OrganisationProfile() {
                 ) : (
                   <ul className="profile-tag-list">
                     {tags.map((tag) => (
-                      <li key={tag}>{tag}</li>
+                      <li key={tag}>
+                        {tag}
+                        <button
+                          type="button"
+                          className="profile-tag-remove"
+                          onClick={() => handleRemoveTag(tag)}
+                          disabled={saving}
+                          aria-label={`Remove tag ${tag}`}
+                        >
+                          <X size={12} />
+                        </button>
+                      </li>
                     ))}
                   </ul>
                 )}
@@ -758,51 +773,7 @@ export default function OrganisationProfile() {
                   }
                 />
               </label>
-
-              <label>
-                <span className="profile-label">Lead Score</span>
-                <input
-                  type="number"
-                  value={form.leadScore}
-                  onChange={(event) =>
-                    updateField("leadScore", Number(event.target.value))
-                  }
-                />
-              </label>
-
-              <label>
-                <span className="profile-label">Research Status</span>
-                <input
-                  type="text"
-                  value={form.researchStatus}
-                  onChange={(event) =>
-                    updateField("researchStatus", event.target.value)
-                  }
-                />
-              </label>
             </div>
-
-            <label className="modal-full">
-              <span className="profile-label">Next Action</span>
-              <input
-                type="text"
-                value={form.nextAction}
-                onChange={(event) =>
-                  updateField("nextAction", event.target.value)
-                }
-              />
-            </label>
-
-            <label className="modal-full">
-              <span className="profile-label">Business Brief</span>
-              <textarea
-                rows={3}
-                value={form.businessBrief}
-                onChange={(event) =>
-                  updateField("businessBrief", event.target.value)
-                }
-              />
-            </label>
 
             <div className="modal-actions">
               <button

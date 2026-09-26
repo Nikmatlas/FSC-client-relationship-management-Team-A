@@ -63,6 +63,10 @@
 ========================================= */
 
 .directory-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
   padding: 14px;
   margin-bottom: 20px;
 
@@ -357,4 +361,32 @@
 .directory-form-create:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* =========================================
+   FILTERS
+========================================= */
+
+.directory-toolbar .directory-search-wrap {
+  flex: 1 1 320px;
+}
+
+.directory-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.directory-filter {
+  padding: 10px 13px;
+
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+
+  cursor: pointer;
 }

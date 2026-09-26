@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Building2, User } from "lucide-react";
+import { Building2, Search, User } from "lucide-react";
 import {
   createOrganisation,
   createStakeholder,
@@ -52,6 +52,9 @@ export default function Organisations() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [industryFilter, setIndustryFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [regionFilter, setRegionFilter] = useState("all");
 
   const [form, setForm] = useState(emptyForm);
 
@@ -153,24 +156,58 @@ export default function Organisations() {
     }
   }
 
+  const industryOptions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          organisations
+            .map((organisation) => (organisation.industry || "").trim())
+            .filter(Boolean)
+        )
+      ).sort(),
+    [organisations]
+  );
+
+  const regionOptions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          organisations
+            .map((organisation) => (organisation.country || "").trim())
+            .filter(Boolean)
+        )
+      ).sort(),
+    [organisations]
+  );
+
   const filteredOrganisations = useMemo(() => {
     const searchTerm = search.toLowerCase().trim();
 
-    if (!searchTerm) {
-      return organisations;
-    }
-
     return organisations.filter((organisation) => {
-      return (
+      const matchesSearch =
+        !searchTerm ||
         (organisation.name || "").toLowerCase().includes(searchTerm) ||
         (organisation.industry || "").toLowerCase().includes(searchTerm) ||
         (organisation.country || "").toLowerCase().includes(searchTerm) ||
         (organisation.pipelineStage || "")
           .toLowerCase()
-          .includes(searchTerm)
-      );
+          .includes(searchTerm);
+
+      const matchesIndustry =
+        industryFilter === "all" ||
+        (organisation.industry || "").trim() === industryFilter;
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        organisation.relationshipStatus === statusFilter;
+
+      const matchesRegion =
+        regionFilter === "all" ||
+        (organisation.country || "").trim() === regionFilter;
+
+      return matchesSearch && matchesIndustry && matchesStatus && matchesRegion;
     });
-  }, [organisations, search]);
+  }, [organisations, search, industryFilter, statusFilter, regionFilter]);
 
   const visibleOrganisations = filteredOrganisations.slice(0, visibleCount);
 
@@ -196,16 +233,69 @@ export default function Organisations() {
         {error && <p className="directory-error">{error}</p>}
 
         <div className="directory-toolbar">
-          <input
-            type="text"
-            className="directory-search"
-            placeholder="Search organisations by name or pipeline status..."
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setVisibleCount(PAGE_SIZE);
-            }}
-          />
+          <div className="directory-search-wrap">
+            <Search size={16} className="directory-search-icon" />
+            <input
+              type="text"
+              className="directory-search"
+              placeholder="Search organisations by name or pipeline status..."
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setVisibleCount(PAGE_SIZE);
+              }}
+            />
+          </div>
+
+          <div className="directory-filters">
+            <select
+              className="directory-filter"
+              aria-label="Filter by industry"
+              value={industryFilter}
+              onChange={(event) => {
+                setIndustryFilter(event.target.value);
+                setVisibleCount(PAGE_SIZE);
+              }}
+            >
+              <option value="all">Industry: All</option>
+              {industryOptions.map((industry) => (
+                <option key={industry} value={industry}>
+                  {industry}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="directory-filter"
+              aria-label="Filter by status"
+              value={statusFilter}
+              onChange={(event) => {
+                setStatusFilter(event.target.value);
+                setVisibleCount(PAGE_SIZE);
+              }}
+            >
+              <option value="all">Status: All</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+
+            <select
+              className="directory-filter"
+              aria-label="Filter by region"
+              value={regionFilter}
+              onChange={(event) => {
+                setRegionFilter(event.target.value);
+                setVisibleCount(PAGE_SIZE);
+              }}
+            >
+              <option value="all">Region: All</option>
+              {regionOptions.map((region) => (
+                <option key={region} value={region}>
+                  {region}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {loading ? (
